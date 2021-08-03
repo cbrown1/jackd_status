@@ -155,8 +155,9 @@ class XfceStatusIcon():
         if ret:
             if not self.jack_info:
                 self.jack_info = self.jack_get_info()
-            self.indicator.set_title("jackd is running")
-            self.indicator.set_icon_full("state_running", self.jack_info)
+            this_info = f"CPU %: {self.jack_cpu()}\n" + self.jack_info
+            self.indicator.set_title(f"jackd is running")
+            self.indicator.set_icon_full("state_running", this_info)
             self.jack_pid = ret
             self.start_jack_menu_item.set_label("Stop jackd")
         else:
@@ -187,6 +188,7 @@ class XfceStatusIcon():
         """
 
         p = psutil.Process(self.jack_pid)
+        self.jack_cpu = p.cpu_percent
         cmd = p.cmdline()
         skip = False
         ret = ""
